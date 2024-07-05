@@ -2,8 +2,10 @@ const { defaults } = require("pg");
 const db= require("../models/index");
 const fileUploadServices= require("../services/file-upload");
 const hotelServices= require("../services/hotel");
+require('dotenv').config();
 
 const createhotel= async (req, res)=>{
+    console.log(process.env.API_SECRET);
     const {name, hotel_pic, location, rooms,smallRoomPrice, largeRoomPrice, amenities}= req.body;
   
     const loc = await db.Location.findOrCreate({
@@ -15,8 +17,8 @@ const createhotel= async (req, res)=>{
         }
     });
 
- 
-     const hotel= await db.Hotel.create({name:name, location_id:loc.id, hotel_pic: hotel_pic,user_id: req.cookies.id });
+ console.log(loc[0]);
+     const hotel= await db.Hotel.create({name:name, location_id:loc[0].id, hotel_pic: hotel_pic,user_id: req.cookies.id });
 
      rooms.map(async e=>{
         if(e.size=="small"){
@@ -48,9 +50,13 @@ if(Array.isArray(amenities)){
 
 
 const signedUrl= async (req, res)=>{
+    try{
     const obj= await fileUploadServices.createImageUpload();
-
+console.log(obj);
 res.send({signedUrl:obj});
+    }catch(err){
+        console.log(err);
+    }
 };
 
 const getHotels= async (req, res)=>{

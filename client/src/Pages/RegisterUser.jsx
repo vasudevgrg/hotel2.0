@@ -19,7 +19,7 @@ const RegisterUser = () => {
             headers:{
                 "Content-Type":'application/json'
             },
-            credincials:'include'
+            credentials:'include'
         }).then(e=>e.json()).then(e=>{
             console.log(e);
             if(role==="hotel_owner"){
